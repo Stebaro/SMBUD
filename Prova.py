@@ -114,7 +114,14 @@ if (otherq[1]):
 # if (otherq[3]):
 
 #WHERE, GROUP BY
-# if (otherq[4]):
+#It filters the papers that have at least 3 authors, then it shows for every publisher
+# the max number of pages between the papers he published, shown in descending order
+
+if (otherq[4]):
+    publication_df.filter(size('authors') >= 3)\
+        .groupBy('publisher').max('pages')\
+        .select(publication_df.publisher, col("max(pages)").alias("Maxpages"))\
+        .orderBy(col("Maxpages").desc()).show(50)
 
 #GROUP BY, HAVING, AS
 # if (otherq[5]):
