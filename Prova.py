@@ -1,6 +1,6 @@
 # Import the basic spark library
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import when, lit, collect_list, col, regexp_replace, size
+from pyspark.sql.functions import when, lit, collect_list, col, regexp_replace, size, expr, count
 
 # Create an entry point to the PySpark Application
 spark = SparkSession.builder \
@@ -38,11 +38,11 @@ venue_df = spark.read.json("C:\\Users\\bsbar\\PycharmProjects\\pythonProject\\ve
 rel_df = spark.read.json("C:\\Users\\bsbar\\PycharmProjects\\pythonProject\\rel_dw.json")
 # author_df.show()
 # fos_df.show()
-#publication_df.show()
-# venue_df.show()
+publication_df.show()
+#venue_df.show()
 #rel_df.show()
-creationalq = [False, False, False, False, True]
-otherq = [False, False, False, False, False, False, False, False, False, False]
+creationalq = [False, False, False, False, False]
+otherq = [True, False, False, False, False, False, False, False, False, False]
 
 # rdd=spark.sparkContext.parallelize(author_df)
 # "print(rdd.collect())
@@ -87,22 +87,46 @@ if creationalq[4]:
 
 
 # OTHER QUERIES:
-# if (otherq[0]):
+#WHERE, JOIN
+if (otherq[0]):
+    fos_df.filter(col("name") == "Artificial intelligence") \
+    .join(rel_df, fos_df.id == rel_df.fos_id, "inner") \
+    .join(publication_df, rel_df.pub_id == publication_df.id, "inner") \
+    .select("title").show(truncate=False)
 
-# if (otherq[1]):
 
+
+#WHERE, LIMIT, LIKE
+if (otherq[1]):
+    author_df.withColumnRenamed("id", "authorId").filter(col("affiliation").like("%Politecnico%")).limit(5).join(
+        publication_df, expr(
+            "array_contains(authors, authorId)")).select(col("title").alias("publicationTitle"),
+                                                         col("name").alias("authorName"), "affiliation").show(truncate=False)
+
+    author_df.withColumnRenamed("id", "authorId").filter(
+        col("affiliation").like("%Politecnico%")).limit(5)
+    publication_df.select(count(.name)).show()
+
+#WHERE, IN Nested Query
 # if (otherq[2]):
 
+#GROUP BY, 1 JOIN, AS
 # if (otherq[3]):
 
+#WHERE, GROUP BY
 # if (otherq[4]):
 
+#GROUP BY, HAVING, AS
 # if (otherq[5]):
 
+#WHERE, GROUP BY, HAVING, AS
 # if (otherq[6]):
 
+#WHERE, Nested Query(i.e., 2-step Queries), GROUP BY
 # if (otherq[7]):
 
+#WHERE, GROUP BY, HAVING, 1 JOIN
 # if (otherq[8]):
 
+#WHERE, GROUP BY, HAVING, 2 JOINs
 # if (otherq[9]):
