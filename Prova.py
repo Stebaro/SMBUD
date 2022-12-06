@@ -36,13 +36,23 @@ fos_df = spark.read.json("C:\\Users\\bsbar\\PycharmProjects\\pythonProject\\fos.
 publication_df = spark.read.json("C:\\Users\\bsbar\\PycharmProjects\\pythonProject\\publications.json")
 venue_df = spark.read.json("C:\\Users\\bsbar\\PycharmProjects\\pythonProject\\venues.json")
 rel_df = spark.read.json("C:\\Users\\bsbar\\PycharmProjects\\pythonProject\\rel_dw.json")
-# author_df.show()
-# fos_df.show()
+
+print("Tabella autori ")
+#author_df.show()
+
+print("Tabella fos")
+#fos_df.show()
+
+print("Tabella publication")
 publication_df.show()
+
+print("Tabella venue")
 #venue_df.show()
+
+print("Tabella rel")
 #rel_df.show()
 creationalq = [False, False, False, False, False]
-otherq = [True, False, False, False, False, False, False, False, False, False]
+otherq = [False, False, False, False, True, False, False, False, False, False]
 
 # rdd=spark.sparkContext.parallelize(author_df)
 # "print(rdd.collect())
