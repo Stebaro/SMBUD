@@ -115,13 +115,21 @@ if (otherq[1]):
 
     author_df.withColumnRenamed("id", "authorId").filter(
         col("affiliation").like("%Politecnico%")).limit(5)
-    publication_df.select(count(.name)).show()
+    #publication_df.select(count(.name)).show()
+
+
 
 #WHERE, IN Nested Query
 # if (otherq[2]):
 
 #GROUP BY, 1 JOIN, AS
-# if (otherq[3]):
+#The query counts for each name of the venue (that has different ID since it can have different editions or volumes)
+# the number of papers that were presented there
+if (otherq[3]):
+    venue_df.join(publication_df, venue_df.id == publication_df.venue, "inner")\
+        .groupby("raw")\
+            .count()\
+                .select(venue_df.raw, col("count").alias("Number of papers for every raw")).show()
 
 #WHERE, GROUP BY
 #It filters the papers that have at least 3 authors, then it shows for every publisher
@@ -147,3 +155,4 @@ if (otherq[4]):
 
 #WHERE, GROUP BY, HAVING, 2 JOINs
 # if (otherq[9]):
+
