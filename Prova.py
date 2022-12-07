@@ -1,6 +1,6 @@
 # Import the basic spark library
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import when, lit, collect_list, col, regexp_replace, size, expr, count
+from pyspark.sql.functions import when, lit, collect_list, col, regexp_replace, size, expr, count, countDistinct
 
 # Create an entry point to the PySpark Application
 spark = SparkSession.builder \
