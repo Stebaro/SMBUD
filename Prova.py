@@ -120,7 +120,13 @@ if (otherq[1]):
 
 
 #WHERE, IN Nested Query
-# if (otherq[2]):
+# Return the number of publications that have at least one fos whose name contains "Computer"
+if (otherq[2]):
+    computerScience_fos = fos_df.filter(col("name").contains("Computer")).select(col("id")).collect()
+    computerScience_fos = [csf[0] for csf in computerScience_fos]
+
+    count_cs_publications = rel_df.filter(col("fos_id").isin(computerScience_fos)).select(col("pub_id")).distinct().count()
+    print("percentage of publications that have fos with Computer:" + str(count_cs_publications/2500))
 
 #GROUP BY, 1 JOIN, AS
 #The query counts for each name of the venue (that has different ID since it can have different editions or volumes)
