@@ -38,13 +38,13 @@ venue_df = spark.read.json("C:\\Users\\bsbar\\PycharmProjects\\pythonProject\\ve
 rel_df = spark.read.json("C:\\Users\\bsbar\\PycharmProjects\\pythonProject\\rel_dw.json")
 
 print("Tabella autori ")
-#author_df.show()
+author_df.show()
 
 print("Tabella fos")
 #fos_df.show()
 
 print("Tabella publication")
-publication_df.show()
+#publication_df.show()
 
 print("Tabella venue")
 #venue_df.show()
@@ -52,7 +52,7 @@ print("Tabella venue")
 print("Tabella rel")
 #rel_df.show()
 creationalq = [False, False, False, False, False]
-otherq = [False, False, False, False, True, False, False, False, False, False]
+otherq = [False, False, False, False, False, True, False, False, False, False]
 
 # rdd=spark.sparkContext.parallelize(author_df)
 # "print(rdd.collect())
@@ -144,11 +144,26 @@ if (otherq[3]):
 if (otherq[4]):
     publication_df.filter(size('authors') >= 3)\
         .groupBy('publisher').max('pages')\
-        .select(publication_df.publisher, col("max(pages)").alias("Maxpages"))\
-        .orderBy(col("Maxpages").desc()).show(50)
+            .select(publication_df.publisher, col("max(pages)").alias("Maxpages"))\
+                .orderBy(col("Maxpages").desc()).show(50)
 
 #GROUP BY, HAVING, AS
-# if (otherq[5]):
+
+#The query groups the venues by affiliation, for each of them it counts the number of authors by id and collects
+#the names of the authors in a list, then it filters (HAVING) the affiliations by the number of authors in the list
+#that should be between 5 and 15. We order the table by descending order for the number of authors, and in case of tie
+#they show the affiliation name in alphabetic order
+
+if (otherq[5]):
+    author_df.groupBy("affiliation")\
+        .agg(
+            countDistinct("id").alias("Number of Authors"),
+            collect_list(author_df.name).alias("Authors list")
+            )\
+                .filter((col("Number of Authors") < 15) & (col("Number of Authors") > 5))\
+                    .orderBy(col("Number of Authors").desc(), col("affiliation").asc())\
+                        .show(truncate=False)
+
 
 #WHERE, GROUP BY, HAVING, AS
 # if (otherq[6]):
